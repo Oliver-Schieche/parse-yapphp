@@ -130,34 +130,34 @@ sub RulesTable {
     my($ruleno);
     my($text);
 
-        defined($inputfile)
-    or  $inputfile = 'unkown';
+    $inputfile //= 'unknown';
 
-    $text="[\n\t";
+    $text="[\n";
 
-    $text.=join(",\n\t",
+    $text.=join(",\n",
                 map {
                     my($lhs,$rhs,$code)=@$_[0,1,3];
                     my($len)=scalar(@$rhs);
                     my($text);
 
-                    $text.="[#Rule ".$ruleno++."\n\t\t '$lhs', $len,";
+                    $text .= "            /* Rule $ruleno */\n";
+                    $text .= "            ['$lhs', $len, ";
                     if($code) {
-                        $text.= "\nsub".
-                                (  $linenums
-                                 ? qq(\n#line $$code[1] "$inputfile"\n)
-                                 : " ").
-                                "{$$code[0]}";
+                        my $parameters = 'array $_'; #join ', ', map {"\$_$_"} 1..$len;
+                        my $icode = join "\n", map {s/^\s+|\s+$//g; "                $_"} split /\n/, $$code[0];
+                        $icode .= ';' if $icode !~ /[;}]\s*$/;
+                        my $lineinfo = $linenums ? qq(#line $$code[1] "$inputfile"\n) : '';
+                        $text .= "function($parameters) {\n$lineinfo$icode\n";
+                        $text .= '            }]';
                     }
                     else {
-                        $text.=' undef';
+                        $text .= 'null]';
                     }
-                    $text.="\n\t]";
 
                     $text;
                 } @$rules);
 
-    $text.="\n]";
+    $text.="\n        ]";
 
     $text;
 }

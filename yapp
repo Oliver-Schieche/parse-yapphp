@@ -247,14 +247,17 @@ and	do {
 	close(OUT);
 };
 
-my($outfile)="$path$base.pm";
+my($outfile)="$path$base.php";
 my($package)="$base";
+my($namespace)='Parser';
 
 	$opt_m
 and	do {
     $package=$opt_m;
-    $package=~/^(?:(?:[^:]|:(?!:))*::)*(.*)$/;
-    $outfile="$1.pm";
+    $package=~m{^(?:(?<namespace>.*)\\)?(?<classname>[^\\]+)$};
+	$namespace = $+{namespace};
+	$package = $+{classname};
+    $outfile="$package.php";
 };
 
 	$opt_o
@@ -278,6 +281,7 @@ print OUT $parser->Output(classname  => $package,
                           standalone => $opt_s,
                           linenumbers => $opt_n,
                           template    => $opt_t,
+                          namespace   => $namespace,
                          );
 
 

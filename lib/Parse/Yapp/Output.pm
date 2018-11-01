@@ -33,47 +33,45 @@ sub Output {
 
     my($package)=$self->Option('classname');
     my($head,$states,$rules,$tail,$driver);
+	my($namespace)=$self->Option('namespace');
     my($version)=$Parse::Yapp::Driver::VERSION;
     my($datapos);
     my($text)=$self->Option('template') ||<<'EOT';
-####################################################################
-#
-#    This file was generated using Parse::Yapp version <<$version>>.
-#
-#        Don't edit this file, use source file instead.
-#
-#             ANY CHANGE MADE HERE WILL BE LOST !
-#
-####################################################################
-package <<$package>>;
-use vars qw ( @ISA );
-use strict;
+<?php
+/*******************************************************************
+*
+*    This file was generated using Parse::Yapphp version <<$version>>.
+*
+*        Don't edit this file, use source file instead.
+*
+*             ANY CHANGES MADE HERE WILL BE LOST !
+*
+*******************************************************************/
+namespace <<$namespace>>;
 
-@ISA= qw ( Parse::Yapp::Driver );
-<<$driver>>
+class <<$package>>
+{
+    /** @var string */
+	protected $yyversion;
+    /** @var array */
+	protected $yystates;
+    /** @var array */
+	protected $yyrules;
 
 <<$head>>
 
-sub new {
-        my($class)=shift;
-        ref($class)
-    and $class=ref($class);
-
-    my($self)=$class->SUPER::new( yyversion => '<<$version>>',
-                                  yystates =>
-<<$states>>,
-                                  yyrules  =>
-<<$rules>>,
-                                  @_);
-    bless($self,$class);
+    public function __construct()
+    {
+        $this->yyversion = '<<$version>>';
+        $this->yystates = <<$states>>;
+        $this->yyrules = <<$rules>>;
+    }
 }
 
 <<$tail>>
-1;
 EOT
 
 	$driver='use Parse::Yapp::Driver;';
-
         defined($package)
     or $package='Parse::Yapp::Default';
 
@@ -85,8 +83,7 @@ EOT
 		$self->Option('standalone')
 	and	$driver=_CopyDriver();
 
-	$text=~s/<<(\$.+)>>/$1/gee;
-
+	$text=~s/<<(\$[a-z_][a-z_\d]*)>>/$1/igee;
 	$text;
 }
 

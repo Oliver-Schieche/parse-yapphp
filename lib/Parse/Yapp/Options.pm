@@ -40,6 +40,9 @@ my(%known_options)= (
     classname   =>  {
         ''      =>  "Class name of parser object (Perl and C++)"
     },
+    namespace   =>  {
+        ''      =>  'Namespace of generated parser class'
+    },
     standalone  =>  {
         0       =>  "Don't create a standalone parser (Perl and C++)",
         1       =>  "Create a standalone parser"
