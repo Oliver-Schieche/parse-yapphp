@@ -66,9 +66,10 @@ class <<$package>>
         $this->yystates = <<$states>>;
         $this->yyrules = <<$rules>>;
     }
-}
 
 <<$tail>>
+
+}
 EOT
 
 	$driver='use Parse::Yapp::Driver;';

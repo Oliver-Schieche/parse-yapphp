@@ -127,7 +127,7 @@ sub RulesTable {
     my($inputfile)=$self->Option('inputfile');
     my($linenums)=$self->Option('linenumbers');
     my($rules)=$$self{GRAMMAR}{RULES};
-    my($ruleno);
+    my($ruleno)=(0);
     my($text);
 
     $inputfile //= 'unknown';
@@ -140,7 +140,8 @@ sub RulesTable {
                     my($len)=scalar(@$rhs);
                     my($text);
 
-                    $text .= "            /* Rule $ruleno */\n";
+                    $text = "            /* Rule $ruleno */\n";
+					++$ruleno;
                     $text .= "            ['$lhs', $len, ";
                     if($code) {
                         my $parameters = 'array $_'; #join ', ', map {"\$_$_"} 1..$len;

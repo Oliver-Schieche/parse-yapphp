@@ -294,32 +294,32 @@ sub Conflicts {
 sub DfaTable {
     my($self)=shift;
     my($states)=$$self{STATES};
-    my($stateno);
+    my($stateno)=0;
     my($text);
 
-    $text="[\n\t{";
+    $text="[\n";
 
-    $text.=join("\n\t},\n\t{",
+    $text.=join("\n",
                 map {
                     my($state)=$_;
                     my($text);
 
-                    $text="#State ".$stateno++."\n\t\t";
+                    ++$stateno;
+                    $text  = "            /* State $stateno */\n";
+                    $text .= "            [\n";
+                    my @elements;
 
-                       (    not exists($$state{ACTIONS}{''})
-                        or  keys(%{$$state{ACTIONS}}) > 1)
-                    and do {
+                    if (not exists($$state{ACTIONS}{''}) or keys(%{$$state{ACTIONS}}) > 1) {
+                        my $element = "                'ACTIONS' => [\n";
 
-                        $text.="ACTIONS => {\n\t\t\t";
-
-                        $text.=join(",\n\t\t\t",
+                        $element.=join(",\n",
                                 map {
                                     my($term,$action)=($_,$$state{ACTIONS}{$_});
-                                    my($text);
 
                                     if(substr($term,0,1) eq "'") {
-									    $term=~s/([\@\$\"])/\\$1/g;
-                                        $term=~s/^'|'$/"/g;
+                                        $term = qq{"$1"} if $term =~ m{'(.*\\.*)'};
+									    #$term=~s/([\@\$\"])/\\$1/g;
+                                        #$term=~s/^'|'$/"/g;
                                     }
                                     else {
                                         $term=      $term eq chr(0)
@@ -331,43 +331,41 @@ sub DfaTable {
                                         $action=int($action);
                                     }
                                     else {
-                                        $action='undef';
+                                        $action='null';
                                     }
 
-                                    "$term => $action";
+                                    "                    $term => $action";
                                 
                                 } grep { $_ } keys(%{$$state{ACTIONS}}));
 
-                        $text.="\n\t\t}";
+                        $element.="\n                ]";
+                        push @elements, $element;
                     };
 
-                        exists($$state{ACTIONS}{''})
-                    and do {
-                            keys(%{$$state{ACTIONS}}) > 1
-                        and $text.=",\n\t\t";
-
-                        $text.="DEFAULT => $$state{ACTIONS}{''}";
+                    if (exists($$state{ACTIONS}{''})) {
+                        push @elements, "                'DEFAULT' => $$state{ACTIONS}{''}";
                     };
 
-                        exists($$state{GOTOS})
-                    and do {
-                        $text.=",\n\t\tGOTOS => {\n\t\t\t";
-                        $text.=join(",\n\t\t\t",
+                    if (exists($$state{GOTOS})) {
+                        my $element = "                'GOTOS' => [\n";
+                        $element.=join(",\n",
                                 map {
                                     my($nterm,$stateno)=($_,$$state{GOTOS}{$_});
-                                    my($text);
 
-                                    "'$nterm' => $stateno";
+                                    "                    '$nterm' => $stateno";
                                 
                                 } keys(%{$$state{GOTOS}}));
-                        $text.="\n\t\t}";
+                        $element.="\n                ]";
+                        push @elements, $element;
                     };
 
+                    $text .= join ",\n", @elements;
+                    $text .= "\n            ],\n";
                     $text;
 
                 }@$states);
 
-    $text.="\n\t}\n]";
+    $text.="]";
 
     $text;
 

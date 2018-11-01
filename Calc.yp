@@ -44,39 +44,22 @@ exp:        NUM
 
 %%
 
-sub _Error {
-        exists $this->YYData->{ERRMSG}
-    and do {
-        print $this->YYData->{ERRMSG};
-        delete $this->YYData->{ERRMSG};
-        return;
-    };
-    print "Syntax error.\n";
-}
-
-sub _Lexer {
-    my($parser)=shift;
-
-        $parser->YYData->{INPUT}
-    or  $parser->YYData->{INPUT} = <STDIN>
-    or  return('',undef);
-
-    $parser->YYData->{INPUT}=~s/^[ \t]//;
-
-    for ($parser->YYData->{INPUT}) {
-        s/^([0-9]+(?:\.[0-9]+)?)//
-                and return('NUM',$1);
-        s/^([A-Za-z][A-Za-z0-9_]*)//
-                and return('VAR',$1);
-        s/^(.)//s
-                and return($1,$1);
+public function _Error()
+{
+    if (!isset($this->YYData->ERRMSG)) {
+        print "Syntax error.\n";
+    } else {
+        echo $this->YYData->ERRMSG, "\n";
+        unset($this->YYData->ERRMSG);
     }
 }
 
-sub Run {
-    my($self)=shift;
-    $self->YYParse( yylex => \&_Lexer, yyerror => \&_Error );
+public function _Lexer(MyParser $parser)
+{
+    return ['', undef];
 }
 
-my($calc)=new Calc;
-$calc->Run;
+public function Run()
+{
+    return $this->YYParse(['yylex' => [$this, '_Lexer'], 'yyerror' => [$this, '_Error']]);
+}
