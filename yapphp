@@ -288,10 +288,16 @@ open my $fp, '>', $outfile or die "Cannot open $outfile for writing.\n";
 print $fp $parser_src;
 close $fp;
 
+print STDERR "Wrote $outfile.\n";
+
 open $fp, '>', $driverfile or die "Cannot open $driverfile for writing.\n";
 print $fp $driver_src;
 close $fp;
 
+print STDERR "Wrote $driverfile.\n";
+
 open $fp, '>', $lexerfile or die "Cannot open $lexerfile for writing.\n";
 print $fp $lexer_src;
 close $fp;
+
+print STDERR "Wrote $lexerfile.\n";

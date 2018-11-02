@@ -255,6 +255,7 @@
                 if (null === $code) {
                     $semval = $sempar[0] ?? null;
                 } else {
+                    \array_unshift($sempar, null);
                     $semval = $code($sempar);
                 }
 
