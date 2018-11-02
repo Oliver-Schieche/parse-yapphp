@@ -125,7 +125,6 @@
      */
     protected function debug(int $flag, string $message, ...$arguments): self
     {
-
     }
 
     protected function parse()
@@ -143,7 +142,7 @@
         $this->CHECK = '';
 
         while (true) {
-            $stateno = $this->STACK[count($this->STACK) - 1][0];
+            $stateno = $this->STACK[\count($this->STACK) - 1][0];
             $actions = $states[$stateno];
             $act = $actions['DEFAULT'] ?? null;
 
@@ -181,7 +180,7 @@
                 }
 
                 // Reduce
-                list($lhs,$len,$code) = $this->RULES[-$act];
+                list($lhs,$len,$code) = $rules[-$act];
 
                 if ($act) {
                     $this->debug(4, 'Reduce using rule %d (%d,%d): ', -$act, $lhs, $len);
@@ -228,7 +227,7 @@
                 $stackTop = $this->STACK[\count($this->STACK) - 1];
                 $this->debug(4, 'Back to state %d, then ', $stackTop[0]);
 
-                if ('ERROR' === $this->CHECK) {
+                if ('ERROR' !== $this->CHECK) {
                     $this->debug(4, "go to state %d.\n", $states[$stackTop[0]]['GOTOS'][$lhs]);
 
                     if ($dbgerror && 0 === $this->ERRST) {
