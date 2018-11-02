@@ -146,6 +146,22 @@
     }
 
     /**
+     * @return mixed
+     */
+    public function YYToken()
+    {
+        return $this->TOKEN;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function YYValue()
+    {
+        return $this->VALUE;
+    }
+
+    /**
      * @param int $flag
      * @param string $message
      * @param mixed ...$arguments
