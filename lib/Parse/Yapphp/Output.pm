@@ -72,9 +72,11 @@ sub Output {
 *             ANY CHANGES MADE HERE WILL BE LOST !
 *
 *******************************************************************/
-<<$namespace>>class <<$package>> extends <<$driverclass>>
+<<$namespace>><<$head>>/**
+ * "<<$package>>" parser class
+ */
+class <<$package>> extends <<$driverclass>>
 {
-<<$head>>
     /**
      * @return array
      */
@@ -101,6 +103,7 @@ EOT
     $driverclass = "${package}Driver";
 
 	$head= $self->Head();
+	$head .= "\n" if length $head;
 	$rules=$self->RulesTable();
 	$states=$self->DfaTable();
 	$tail= $self->Tail();
