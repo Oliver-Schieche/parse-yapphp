@@ -21,7 +21,7 @@
     /** @var array */
     protected $STATES;
     /** @var string */
-    protected $VERSION;
+    protected $VERSION = '/*<<$version>>*/';
 
     /** @var mixed */
     protected $CHECK, $DEBUG, $DOTPOS, $ERRST, $NBERR, $STACK, $TOKEN, $VALUE;
@@ -32,14 +32,26 @@
     protected $lexer;
 
     /**
+     * @return array
+     */
+    abstract protected function getRules(): array;
+
+    /**
+     * @return array
+     */
+    abstract protected function getStates(): array;
+
+    /**
      * Driver constructor.
      *
      * @param LexerInterface $lexer
      */
     public function __construct(LexerInterface $lexer)
     {
-        $this->DEBUG = 0;
         $this->setLexer($lexer);
+        $this->DEBUG = 0;
+        $this->RULES = $this->getRules();
+        $this->STATES = $this->getStates();
     }
 
     /**
@@ -224,7 +236,7 @@
                 } else {
                     $sempar = \array_map(function($s) {
                         return $s[1];
-                    }, array_slice($this->STACK, -$this->DOTPOS));
+                    }, \array_slice($this->STACK, -$this->DOTPOS));
                 }
 
                 if (null === $code) {

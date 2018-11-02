@@ -18,20 +18,37 @@ use strict;
 use Carp;
 
 sub _CopyDriver {
-    my ($srcfile) = $Parse::Yapp::Driver::FILENAME;
+	my ($srcfile) = $Parse::Yapp::Driver::FILENAME;
 
-    $srcfile =~ s/[.]pm$/.php/;
+	$srcfile =~ s/[.]pm$/.php/;
 
-    open my $fp, '<', $srcfile or die "BUG: could not open $srcfile";
-    my $source = do {
-        local $/ = undef;
-        <$fp>;
-    };
-    close $fp;
+	open my $fp, '<', $srcfile or die "BUG: could not open $srcfile";
+	my $source = do {
+		local $/ = undef;
+		<$fp>;
+	};
+	close $fp;
 
-    ($source) = split /^__halt_compiler[(][)]/m, $source;
+	($source) = split /^__halt_compiler[(][)]/m, $source;
 
-    return $source;
+	return $source;
+}
+
+sub _CopyLexer {
+	my ($srcfile) = $Parse::Yapp::Driver::FILENAME;
+
+	$srcfile =~ s/Driver[.]pm$/LexerInterface.php/;
+
+	open my $fp, '<', $srcfile or die "BUG: could not open $srcfile";
+	my $source = do {
+		local $/ = undef;
+		<$fp>;
+	};
+	close $fp;
+
+	($source) = split /^__halt_compiler[(][)]/m, $source;
+
+	return $source;
 }
 
 sub Output {
@@ -40,7 +57,7 @@ sub Output {
     $self->Options(@_);
 
     my($package)=$self->Option('classname');
-    my($head,$states,$rules,$tail,$driver);
+    my($head,$states,$rules,$tail,$driver,$lexer);
 	my($namespace)=$self->Option('namespace');
     my($version)=$Parse::Yapp::Driver::VERSION;
     my($driverclass);
@@ -59,17 +76,19 @@ sub Output {
 {
 <<$head>>
     /**
-     * <<$package>> constructor
-     *
-     * @param LexerInterface $lexer
+     * @return array
      */
-    public function __construct(LexerInterface $lexer)
+    protected function getRules(): array
     {
-        parent::__construct($lexer);
+    	return <<$rules>>;
+    }
 
-        $this->VERSION = '<<$version>>';
-        $this->STATES = <<$states>>;
-        $this->RULES = <<$rules>>;
+    /**
+     * @return array
+     */
+    protected function getStates(): array
+    {
+    	return <<$states>>;
     }
 <<$tail>>
 }
@@ -86,13 +105,16 @@ EOT
 	$states=$self->DfaTable();
 	$tail= $self->Tail();
 
-	$driver=_CopyDriver();
+	$driver = _CopyDriver();
+	$lexer = _CopyLexer();
 
 	$text =~ s/<<(\$[a-z_][a-z_\d]*)>>/$1/igee;
-    $driver =~ s{/[*]<<(\$[a-z_][a-z_\d]*)>>[*]/}{$1}igee;
+	$lexer =~ s{/[*]<<(\$[a-z_][a-z_\d]*)>>[*]/}{$1}igee;
+	$lexer =~ s/<<(\$[a-z_][a-z_\d]*)>>/$1/igee;
+	$driver =~ s{/[*]<<(\$[a-z_][a-z_\d]*)>>[*]/}{$1}igee;
     $driver =~ s{^abstract class Driver\b}{abstract class $driverclass}m;
-die $driver;
-	return ($text, $driver);
+
+	return ($text, $driver, $lexer);
 }
 
 1;

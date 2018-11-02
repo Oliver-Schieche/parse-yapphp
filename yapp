@@ -248,7 +248,7 @@ and	do {
 my($outfile)="$path$base.php";
 my($package)="$base";
 my($namespace)='Parser';
-my($driverfile);
+my($driverfile,$lexerfile);
 
 if ($opt_m) {
     $package=$opt_m;
@@ -260,19 +260,22 @@ if ($opt_m) {
 
 unless ($opt_o) {
     $driverfile = "$path${package}Driver.php";
+	$lexerfile = "${path}LexerInterface.php";
 } else {
     $outfile = $opt_o;
 
     if ($outfile =~ m{^(.*)[.]php$}) {
         $driverfile = "${1}Driver.php";
+		$lexerfile = 'LexerInterface.php';
     } else {
         $driverfile = "$outfile.driver.php"; # not our fault the parser filename is screwed
+		$lexerfile = "$outfile.lexer_interface.php";
     }
 }
 
 $opt_n = $opt_n ? 0 : 1;
 
-my ($parser_src, $driver_src) = $parser->Output(
+my ($parser_src, $driver_src, $lexer_src) = $parser->Output(
     classname  => $package,
     linenumbers => $opt_n,
     template    => $opt_t,
@@ -284,4 +287,8 @@ close $fp;
 
 open $fp, '>', $driverfile or die "Cannot open $driverfile for writing.\n";
 print $fp $driver_src;
+close $fp;
+
+open $fp, '>', $lexerfile or die "Cannot open $lexerfile for writing.\n";
+print $fp $lexer_src;
 close $fp;
