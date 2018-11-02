@@ -60,6 +60,58 @@
         return $this;
     }
 
+    /**
+     * @return null
+     */
+    public function YYAbort()
+    {
+        $this->CHECK = 'ABORT';
+        return null;
+    }
+
+    /**
+     * @return null
+     */
+    public function YYAccept()
+    {
+        $this->CHECK = 'ACCEPT';
+        return null;
+    }
+
+    /**
+     * @return null
+     */
+    public function YYErrok()
+    {
+        $this->ERRST = 0;
+        return null;
+    }
+
+    /**
+     * @return null
+     */
+    public function YYError()
+    {
+        $this->CHECK = 'ERROR';
+        return null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function YYNberr()
+    {
+        return $this->NBERR;
+    }
+
+    /**
+     * @return bool
+     */
+    public function YYRecovering(): bool
+    {
+        return 0 !== $this->ERRST;
+    }
+
     public function YYParse()
     {
         return $this->parse();
@@ -136,6 +188,61 @@
                 } else {
                     $this->YYAccept();
                 }
+
+                $this->DOTPOS = $len;
+
+                if ('@' === $lhs[0]) { // In-line rule
+                    if (!\preg_match('~^@\d+-(\d+)$', $lhs, $match)) {
+                        throw new \RuntimeException("In-line rule '$lhs' ill-formed; report this as a BUG.");
+                    }
+
+                    $this->DOTPOS = (int) $match[1];
+                }
+
+                if (!$this->DOTPOS) {
+                    $sempar = [];
+                } else {
+                    $sempar = \array_map(function($s) {
+                        return $s[1];
+                    }, array_slice($this->STACK, -$this->DOTPOS));
+                }
+
+                if (null === $code) {
+                    $semval = $sempar[0] ?? null;
+                } else {
+                    $semval = $code($sempar);
+                }
+
+                \array_splice($this->STACK, -$len, $len);
+
+                if ('ACCEPT' === $this->CHECK) {
+                    $this->debug(4, "Accept.\n");
+                    return $semval;
+                }
+
+                if ('ABORT' === $this->CHECK) {
+                    $this->debug(4, "Abort.\n");
+                    return null;
+                }
+
+                $stackTop = $this->STACK[\count($this->STACK) - 1];
+                $this->debug(4, 'Back to state %d, then ', $stackTop[0]);
+
+                if ('ERROR' === $this->CHECK) {
+                    $this->debug(4, "go to state %d.\n", $states[$stackTop[0]]['GOTOS'][$lhs]);
+
+                    if ($dbgerror && 0 === $this->ERRST) {
+                        $this->debug(16, "**End of error recovery.\n");
+                        $dbgerror = 0;
+                    }
+
+                    $this->STACK[] = [$states[$stackTop[0]]['GOTOS'][$lhs], $semval];
+                    $this->CHECK = '';
+                    continue;
+                }
+
+                $this->debug(4, "Forced error recovery.\n");
+                $this->CHECK = '';
             }
         }
     }
