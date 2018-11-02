@@ -15,7 +15,7 @@ WriteMakefile(
               'lib/Parse/Yapp/Output.pm' => '$(INST_LIBDIR)/Yapp/Output.pm',
               'lib/Parse/Yapp/Parse.pm' => '$(INST_LIBDIR)/Yapp/Parse.pm'
             },
-	'EXE_FILES' => [ 'yapp' ],
+	'EXE_FILES' => [ 'yapphp' ],
 );
 
 sub MY::postamble {

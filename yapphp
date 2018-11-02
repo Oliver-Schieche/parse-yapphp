@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# yapp -- Front end to the Parse::Yapp module
+# yapphp -- Front end to the Parse::Yapp module
 #
 # Copyright © 1998, 1999, 2000, 2001, Francois Desarmenien.
 # Copyright © 2017 William N. Braswell, Jr.
@@ -13,21 +13,21 @@
 
 =head1 NAME
 
-yapp - A perl frontend to the Parse::Yapp module
+yapphp - A perl frontend to the Parse::Yapp module
 
 
 =head1 SYNOPSYS
 
-yapp [options] I<grammar>[.yp]
+yapphp [options] I<grammar>[.yp]
 
-yapp I<-V>
+yapphp I<-V>
 
-yapp I<-h>
+yapphp I<-h>
 
 
 =head1 DESCRIPTION
 
-yapp is a frontend to the Parse::Yapp module, which lets you compile
+yapphp is a frontend to the Parse::Yapp module, which lets you compile
 Parse::Yapp grammar input files into Perl LALR(1) OO parser modules.
 
 
@@ -81,7 +81,7 @@ If you work on systems that understand so called I<shebangs>, and your
 generated parser is directly an executable script, you can specifie one
 with the I<-b> option, ie:
 
-    yapp -b '/usr/local/bin/perl -w' -o myscript.pl myscript.yp
+    yapphp -b '/usr/local/bin/perl -w' -o myscript.pl myscript.yp
 
 This will output a file called F<myscript.pl> whose very first line is:
 

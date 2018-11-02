@@ -16,7 +16,7 @@ README.md
 t/base.t
 t/calc.t
 t/stress.t
-yapp
+yapphp
 YappParse.yp
 META.yml                                 Module YAML meta-data (added by MakeMaker)
 META.json                                Module JSON meta-data (added by MakeMaker)
