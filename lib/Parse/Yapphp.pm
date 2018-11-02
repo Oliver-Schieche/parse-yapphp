@@ -1,23 +1,23 @@
 #
-# Module Parse::Yapp.pm.
+# Module Parse::Yapphp.pm.
 #
 # Copyright © 1998, 1999, 2000, 2001, Francois Desarmenien.
 # Copyright © 2017 William N. Braswell, Jr.
 # All Rights Reserved.
 #
-# See the Copyright section at the end of the Parse/Yapp.pm pod section
+# See the Copyright section at the end of the Parse/Yapphp.pm pod section
 # for usage and distribution rights.
 #
 #
-package Parse::Yapp;
+package Parse::Yapphp;
 
 use strict;
 use vars qw($VERSION @ISA);
-@ISA = qw(Parse::Yapp::Output);
+@ISA = qw(Parse::Yapphp::Output);
 
-use Parse::Yapp::Output;
+use Parse::Yapphp::Output;
 
-# CORRELATION #py001: $VERSION must be changed in both Parse::Yapp & Parse::Yapp::Driver
+# CORRELATION #py001: $VERSION must be changed in both Parse::Yapphp & Parse::Yapphp::Driver
 our $VERSION = '1.21';
 
 1;
@@ -28,7 +28,7 @@ __END__
 
 =head1 NAME
 
-Parse::Yapp - Perl extension for generating and using LALR parsers. 
+Parse::Yapphp - Perl extension for generating and using LALR parsers.
 
 =head1 SYNOPSIS
 
@@ -49,11 +49,11 @@ Parse::Yapp - Perl extension for generating and using LALR parsers.
 
 =head1 DESCRIPTION
 
-Parse::Yapp (Yet Another Perl Parser compiler) is a collection of modules
+Parse::Yapphp (Yet Another Perl Parser compiler) is a collection of modules
 that let you generate and use yacc like thread safe (reentrant) parsers with
 perl object oriented interface.
 
-The script yapp is a front-end to the Parse::Yapp module and let you
+The script yapp is a front-end to the Parse::Yapphp module and let you
 easily create a Perl OO parser from an input grammar file.
 
 =head2 The Grammar file
@@ -97,7 +97,7 @@ I<error> token, which is certainly NOT what you meant.
 
 =item C<Grammar file syntax>
 
-It is very close to yacc syntax (in fact, I<Parse::Yapp> should compile
+It is very close to yacc syntax (in fact, I<Parse::Yapphp> should compile
 a clean I<yacc> grammar without any modification, whereas the opposite
 is not true).
 
@@ -131,7 +131,7 @@ specifying associativity, followed by the list of tokens or litterals
 having the same precedence and associativity.
 The precedence being the latter declared will be having the highest level.
 (see the yacc or bison manuals for a full explanation of how they work,
-as they are implemented exactly the same way in Parse::Yapp)
+as they are implemented exactly the same way in Parse::Yapphp)
 
 =item *
 
@@ -144,7 +144,7 @@ used, is the first rule in your grammar section.
 C<%token> followed by a list of symbols, forcing them to be recognized
 as tokens, generating a syntax error if used in the left hand side of
 a rule declaration.
-Note that in Parse::Yapp, you I<don't> need to declare tokens as in yacc: any
+Note that in Parse::Yapphp, you I<don't> need to declare tokens as in yacc: any
 symbol not appearing as a left hand side of a rule is considered to be
 a token.
 Other yacc declarations or constructs such as C<%type> and C<%union> are
@@ -174,7 +174,7 @@ A right hand side may be empty:
         |   input line
         ;
 
-(if you have more than one empty rhs, Parse::Yapp will issue a warning,
+(if you have more than one empty rhs, Parse::Yapphp will issue a warning,
 as this is usually a mistake, and you will certainly have a reduce/reduce
 conflict)
 
@@ -189,7 +189,7 @@ below).
         |  NUM
         ;
 
-Note that in Parse::Yapp, a lhs I<cannot> appear more than once as
+Note that in Parse::Yapphp, a lhs I<cannot> appear more than once as
 a rule name (This differs from yacc).
 
 
@@ -231,7 +231,7 @@ Sorry for the inconvenience.
 All of these constructs should work.
 
 
-In Parse::Yapp, semantic actions are called like normal Perl sub calls,
+In Parse::Yapphp, semantic actions are called like normal Perl sub calls,
 with their arguments passed in C<@_>, and their semantic value are
 their return values.
 
@@ -284,7 +284,7 @@ through the method
 where index is an integer. Its value being I<1 .. n> returns the same values
 than I<$_[1] .. $_[n]>, but I<-n .. 0> returns values on the left of the rule
 being reduced (It is related to I<$-n .. $0 .. $n> in yacc, but you
-cannot use I<$_[0]> or I<$_[-n]> constructs in Parse::Yapp for obvious reasons)
+cannot use I<$_[0]> or I<$_[-n]> constructs in Parse::Yapphp for obvious reasons)
 
 
 There is also a provision for a user data area in the parser object,
@@ -316,7 +316,7 @@ It is also possible to embed semantic actions inside of a rule:
 
     typedef:    TYPE { $type = $_[1] } identlist { ... } ;
 
-When the Parse::Yapp's parser encounter such an embedded action, it modifies
+When the Parse::Yapphp's parser encounter such an embedded action, it modifies
 the grammar as if you wrote (although @x-1 is not a legal lhs value):
 
     @x-1:   /* empty */ { $type = $_[1] };
@@ -328,7 +328,7 @@ and I<-1> represents the "dot position" in the rule where the action arises.
 In such actions, you can use I<$_[1]..$_[n]> variables, which are the
 semantic values on the left of your action.
 
-Be aware that the way Parse::Yapp modifies your grammar because of
+Be aware that the way Parse::Yapphp modifies your grammar because of
 I<in rule actions> can produce, in some cases, spurious conflicts
 that wouldn't happen otherwise.  
 
@@ -444,7 +444,7 @@ which returns the total number of time the error reporting sub has been called.
 
 =item C<Error Recovery>
 
-in Parse::Yapp is implemented the same way it is in yacc.
+in Parse::Yapphp is implemented the same way it is in yacc.
 
 =item C<Debugging Parser>
 
@@ -470,17 +470,17 @@ C<huge> outputs.
 
 =item C<Standalone Parsers>
 
-By default, the parser modules generated will need the Parse::Yapp
-module installed on the system to run. They use the Parse::Yapp::Driver
+By default, the parser modules generated will need the Parse::Yapphp
+module installed on the system to run. They use the Parse::Yapphp::Driver
 which can be safely shared between parsers in the same script.
 
 In the case you'd prefer to have a standalone module generated, use
 the C<-s> switch with yapp: this will automagically copy the driver
 code into your module so you can use/distribute it without the need
-of the Parse::Yapp module, making it really a C<Standalone Parser>.
+of the Parse::Yapphp module, making it really a C<Standalone Parser>.
 
-If you do so, please remember to include Parse::Yapp's copyright notice
-in your main module copyright, so others can know about Parse::Yapp module.
+If you do so, please remember to include Parse::Yapphp's copyright notice
+in your main module copyright, so others can know about Parse::Yapphp module.
 
 =item C<Source file line numbers>
 
@@ -493,7 +493,7 @@ the C<-n> switch.
 
 =head1 BUGS AND SUGGESTIONS
 
-If you find bugs, think of anything that could improve Parse::Yapp
+If you find bugs, think of anything that could improve Parse::Yapphp
 or have any questions related to it, feel free to contact the author.
 
 =head1 AUTHOR
@@ -507,7 +507,7 @@ yapp(1) perl(1) yacc(1) bison(1).
 
 =head1 COPYRIGHT
 
-The Parse::Yapp module and its related modules and shell scripts are copyright:
+The Parse::Yapphp module and its related modules and shell scripts are copyright:
 Copyright © 1998, 1999, 2000, 2001, Francois Desarmenien.
 Copyright © 2017 William N. Braswell, Jr.
 
@@ -516,7 +516,7 @@ the GNU General Public License or the Artistic License,
 as specified in the Perl README file.
 
 If you use the "standalone parser" option so people don't need to install
-Parse::Yapp on their systems in order to run you software, this copyright
+Parse::Yapphp on their systems in order to run you software, this copyright
 noticed should be included in your software copyright too, and the copyright
 notice in the embedded driver should be left untouched.
 

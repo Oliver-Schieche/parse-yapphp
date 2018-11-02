@@ -20,7 +20,7 @@ $^W=0;
 
 BEGIN { $| = 1; print "1..10\n"; }
 END {print "not ok 1\n" unless $loaded;}
-use Parse::Yapp;
+use Parse::Yapphp;
 $loaded = 1;
 print "ok 1\n";
 
@@ -30,7 +30,7 @@ print "ok 1\n";
 # (correspondingly "not ok 13") depending on the success of chunk 13
 # of the test code):
 
-use Parse::Yapp;
+use Parse::Yapphp;
 
 my($testnum)=2;
 my($parser,$grammar);

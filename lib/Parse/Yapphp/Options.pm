@@ -1,11 +1,11 @@
 #
-# Module Parse::Yapp::Options
+# Module Parse::Yapphp::Options
 #
 # Copyright © 1998, 1999, 2000, 2001, Francois Desarmenien.
 # Copyright © 2017 William N. Braswell, Jr.
-# (see the pod text in Parse::Yapp module for use and distribution rights)
+# (see the pod text in Parse::Yapphp module for use and distribution rights)
 #
-package Parse::Yapp::Options;
+package Parse::Yapphp::Options;
 
 use strict;
 use Carp;

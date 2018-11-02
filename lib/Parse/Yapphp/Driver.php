@@ -1,17 +1,17 @@
 <?php
-/* Module Parse::Yapp::Driver
+/* Module Parse::Yapphp::Driver
  *
- * This module is part of the Parse::Yapp package available on your
+ * This module is part of the Parse::Yapphp package available on your
  * nearest CPAN
  *
  * Any use of this module in a standalone parser make the included
- * text under the same copyright as the Parse::Yapp module itself.
+ * text under the same copyright as the Parse::Yapphp module itself.
  *
  * This notice should remain unchanged.
  *
  * Copyright © 1998, 1999, 2000, 2001, Francois Desarmenien.
  * Copyright © 2017 William N. Braswell, Jr.
- * (see the pod text in Parse::Yapp module for use and distribution rights)
+ * (see the pod text in Parse::Yapphp module for use and distribution rights)
  */
 //------------------------------------------------------------------------------
 /*<<$namespace>>*/abstract class Driver

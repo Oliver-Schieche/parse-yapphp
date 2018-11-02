@@ -1,19 +1,19 @@
 #
-# Module Parse::Yapp::Grammar
+# Module Parse::Yapphp::Grammar
 #
 # Copyright © 1998, 1999, 2000, 2001, Francois Desarmenien.
 # Copyright © 2017 William N. Braswell, Jr.
-# (see the pod text in Parse::Yapp module for use and distribution rights)
+# (see the pod text in Parse::Yapphp module for use and distribution rights)
 #
-package Parse::Yapp::Grammar;
-@ISA=qw( Parse::Yapp::Options );
+package Parse::Yapphp::Grammar;
+@ISA=qw( Parse::Yapphp::Options );
 
 require 5.004;
 
 use Carp;
 use strict;
-use Parse::Yapp::Options;
-use Parse::Yapp::Parse;
+use Parse::Yapphp::Options;
+use Parse::Yapphp::Parse;
 
 ###############
 # Constructor #
@@ -24,7 +24,7 @@ sub new {
 
     my($self)=$class->SUPER::new(@_);
 
-    my($parser)=new Parse::Yapp::Parse;
+    my($parser)=new Parse::Yapphp::Parse;
 
         defined($self->Option('input'))
     or  croak "No input grammar";

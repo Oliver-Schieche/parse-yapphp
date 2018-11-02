@@ -1,29 +1,29 @@
 ####################################################################
 #
-#    This file was generated using Parse::Yapp version 1.06.
+#    This file was generated using Parse::Yapphp version 1.06.
 #
 #        Don't edit this file, use source file instead.
 #
 #             ANY CHANGE MADE HERE WILL BE LOST !
 #
 ####################################################################
-package Parse::Yapp::Parse;
+package Parse::Yapphp::Parse;
 use vars qw ( @ISA );
 use strict;
 
-@ISA= qw ( Parse::Yapp::Driver );
-use Parse::Yapp::Driver;
+@ISA= qw ( Parse::Yapphp::Driver );
+use Parse::Yapphp::Driver;
 
 #line 1 "YappParse.yp"
 
 # Copyright © 1998, 1999, 2000, 2001, Francois Desarmenien.
 # Copyright © 2017 William N. Braswell, Jr.
 # All Rights Reserved.
-# (see COPYRIGHT in Parse::Yapp.pm pod section for use and distribution rights)
+# (see COPYRIGHT in Parse::Yapphp.pm pod section for use and distribution rights)
 #
-# Parse/Yapp/Parser.yp: Parse::Yapp::Parser.pm source file
+# Parse/Yapphp/Parser.yp: Parse::Yapphp::Parser.pm source file
 #
-# Use: yapp -m 'Parse::Yapp::Parse' -o Parse/Yapp/Parse.pm YappParse.yp
+# Use: yapp -m 'Parse::Yapphp::Parse' -o Parse/Yapphp/Parse.pm YappParse.yp
 #
 # to generate the Parser module.
 # 
@@ -938,7 +938,7 @@ sub _Lexer {
 
     #Always return something
         $$input=~/\G(.)/sg
-    or  die "Parse::Yapp::Grammar::Parse: Match (.) failed: report as a BUG";
+    or  die "Parse::Yapphp::Grammar::Parse: Match (.) failed: report as a BUG";
 
         $1 eq "\n"
     and ++$lineno[1];

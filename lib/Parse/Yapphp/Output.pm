@@ -1,24 +1,24 @@
 #
-# Module Parse::Yapp::Output
+# Module Parse::Yapphp::Output
 #
 # Copyright © 1998, 1999, 2000, 2001, Francois Desarmenien.
 # Copyright © 2017 William N. Braswell, Jr.
-# (see the pod text in Parse::Yapp module for use and distribution rights)
+# (see the pod text in Parse::Yapphp module for use and distribution rights)
 #
-package Parse::Yapp::Output;
-@ISA=qw ( Parse::Yapp::Lalr );
+package Parse::Yapphp::Output;
+@ISA=qw ( Parse::Yapphp::Lalr );
 
 require 5.004;
 
-use Parse::Yapp::Lalr;
-use Parse::Yapp::Driver;
+use Parse::Yapphp::Lalr;
+use Parse::Yapphp::Driver;
 
 use strict;
 
 use Carp;
 
 sub _CopyDriver {
-	my ($srcfile) = $Parse::Yapp::Driver::FILENAME;
+	my ($srcfile) = $Parse::Yapphp::Driver::FILENAME;
 
 	$srcfile =~ s/[.]pm$/.php/;
 
@@ -35,7 +35,7 @@ sub _CopyDriver {
 }
 
 sub _CopyLexer {
-	my ($srcfile) = $Parse::Yapp::Driver::FILENAME;
+	my ($srcfile) = $Parse::Yapphp::Driver::FILENAME;
 
 	$srcfile =~ s/Driver[.]pm$/LexerInterface.php/;
 
@@ -59,7 +59,7 @@ sub Output {
     my($package)=$self->Option('classname');
     my($head,$states,$rules,$tail,$driver,$lexer);
 	my($namespace)=$self->Option('namespace');
-    my($version)=$Parse::Yapp::Driver::VERSION;
+    my($version)=$Parse::Yapphp::Driver::VERSION;
     my($driverclass);
     my($text)=$self->Option('template') ||<<'EOT';
 <?php

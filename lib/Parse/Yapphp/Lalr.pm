@@ -1,16 +1,16 @@
 #
-# Module Parse::Yapp::Lalr
+# Module Parse::Yapphp::Lalr
 #
 # Copyright © 1998, 1999, 2000, 2001, Francois Desarmenien.
 # Copyright © 2017 William N. Braswell, Jr.
-# (see the pod text in Parse::Yapp module for use and distribution rights)
+# (see the pod text in Parse::Yapphp module for use and distribution rights)
 #
-package Parse::Yapp::Lalr;
-@ISA=qw( Parse::Yapp::Grammar );
+package Parse::Yapphp::Lalr;
+@ISA=qw( Parse::Yapphp::Grammar );
 
 require 5.004;
 
-use Parse::Yapp::Grammar;
+use Parse::Yapphp::Grammar;
 
 =for nobody
 
