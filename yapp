@@ -137,7 +137,7 @@ use Parse::Yapp;
 
 use strict;
 
-use vars qw ( $opt_n $opt_m $opt_V $opt_v $opt_o $opt_h $opt_s $opt_t $opt_b);
+use vars qw($opt_n $opt_m $opt_V $opt_v $opt_o $opt_h $opt_t);
 
 sub Usage {
 	my($prog)=(fileparse($0,'\..*'))[0];
@@ -150,7 +150,6 @@ Usage:	$prog [options] grammar[.yp]
     -m module   Give your parser module the name <module>
                 default is <grammar>
     -v          Create a file <grammar>.output describing your parser
-    -s          Create a standalone module in which the driver is included
     -n          Disable source file line numbering embedded in your parser
     -o outfile  Create the file <outfile> for your parser module
                 Default is <grammar>.pm or, if -m A::Module::Name is
@@ -158,7 +157,6 @@ Usage:	$prog [options] grammar[.yp]
     -t filename Uses the file <filename> as a template for creating the parser
                 module file.  Default is to use internal template defined
                 in Parse::Yapp::Output
-    -b shebang  Adds '#!<shebang>' as the very first line of the output file
 
     grammar     The grammar file. If no suffix is given, and the file
                 does not exists, .yp is added
@@ -171,7 +169,7 @@ EOF
 
 my($nbargs)=@ARGV;
 
-	getopts('Vhvsnb:m:t:o:')
+	getopts('Vhvnm:t:o:')
 or	Usage;
 
    (  ($opt_V and $nbargs > 1)
@@ -250,40 +248,40 @@ and	do {
 my($outfile)="$path$base.php";
 my($package)="$base";
 my($namespace)='Parser';
+my($driverfile);
 
-	$opt_m
-and	do {
+if ($opt_m) {
     $package=$opt_m;
     $package=~m{^(?:(?<namespace>.*)\\)?(?<classname>[^\\]+)$};
 	$namespace = $+{namespace};
 	$package = $+{classname};
     $outfile="$package.php";
-};
+}
 
-	$opt_o
-and	$outfile=$opt_o;
+unless ($opt_o) {
+    $driverfile = "$path${package}Driver.php";
+} else {
+    $outfile = $opt_o;
 
-$opt_s = $opt_s ? 1 : 0;
+    if ($outfile =~ m{^(.*)[.]php$}) {
+        $driverfile = "${1}Driver.php";
+    } else {
+        $driverfile = "$outfile.driver.php"; # not our fault the parser filename is screwed
+    }
+}
 
 $opt_n = $opt_n ? 0 : 1;
 
-	open(OUT,">$outfile")
-or	die "Cannot open $outfile for writing.\n";
+my ($parser_src, $driver_src) = $parser->Output(
+    classname  => $package,
+    linenumbers => $opt_n,
+    template    => $opt_t,
+    namespace   => $namespace);
 
-    defined($opt_b)
-and do {
-        $opt_b
-    or  $opt_b = $Config{perlpath};
-    print OUT "#!$opt_b\n";
-};
+open my $fp, '>', $outfile or die "Cannot open $outfile for writing.\n";
+print $fp $parser_src;
+close $fp;
 
-print OUT $parser->Output(classname  => $package,
-                          standalone => $opt_s,
-                          linenumbers => $opt_n,
-                          template    => $opt_t,
-                          namespace   => $namespace,
-                         );
-
-
-close(OUT);
-
+open $fp, '>', $driverfile or die "Cannot open $driverfile for writing.\n";
+print $fp $driver_src;
+close $fp;

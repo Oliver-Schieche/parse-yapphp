@@ -18,12 +18,20 @@ use strict;
 use Carp;
 
 sub _CopyDriver {
-	my($text)='#Included Parse/Yapp/Driver.pm file'.('-' x 40)."\n";
-		open(DRV,$Parse::Yapp::Driver::FILENAME)
-	or	die "BUG: could not open $Parse::Yapp::Driver::FILENAME";
-	$text.="{\n".join('',<DRV>)."}\n";
-	close(DRV);
-	$text.='#End of include'.('-' x 50)."\n";
+    my ($srcfile) = $Parse::Yapp::Driver::FILENAME;
+
+    $srcfile =~ s/[.]pm$/.php/;
+
+    open my $fp, '<', $srcfile or die "BUG: could not open $srcfile";
+    my $source = do {
+        local $/ = undef;
+        <$fp>;
+    };
+    close $fp;
+
+    ($source) = split /^__halt_compiler[(][)]/m, $source;
+
+    return $source;
 }
 
 sub Output {
@@ -35,7 +43,7 @@ sub Output {
     my($head,$states,$rules,$tail,$driver);
 	my($namespace)=$self->Option('namespace');
     my($version)=$Parse::Yapp::Driver::VERSION;
-    my($datapos);
+    my($driverclass);
     my($text)=$self->Option('template') ||<<'EOT';
 <?php
 /*******************************************************************
@@ -47,45 +55,44 @@ sub Output {
 *             ANY CHANGES MADE HERE WILL BE LOST !
 *
 *******************************************************************/
-namespace <<$namespace>>;
-
-class <<$package>>
+<<$namespace>>class <<$package>> extends <<$driverclass>>
 {
-    /** @var string */
-	protected $yyversion;
-    /** @var array */
-	protected $yystates;
-    /** @var array */
-	protected $yyrules;
-
 <<$head>>
-
-    public function __construct()
+    /**
+     * <<$package>> constructor
+     *
+     * @param LexerInterface $lexer
+     */
+    public function __construct(LexerInterface $lexer)
     {
-        $this->yyversion = '<<$version>>';
-        $this->yystates = <<$states>>;
-        $this->yyrules = <<$rules>>;
+        parent::__construct($lexer);
+
+        $this->VERSION = '<<$version>>';
+        $this->STATES = <<$states>>;
+        $this->RULES = <<$rules>>;
     }
-
 <<$tail>>
-
 }
 EOT
 
-	$driver='use Parse::Yapp::Driver;';
-        defined($package)
-    or $package='Parse::Yapp::Default';
+    if (length $namespace) {
+        $namespace = "namespace $namespace;\n\n";
+    }
+
+    $driverclass = "${package}Driver";
 
 	$head= $self->Head();
 	$rules=$self->RulesTable();
 	$states=$self->DfaTable();
 	$tail= $self->Tail();
 
-		$self->Option('standalone')
-	and	$driver=_CopyDriver();
+	$driver=_CopyDriver();
 
-	$text=~s/<<(\$[a-z_][a-z_\d]*)>>/$1/igee;
-	$text;
+	$text =~ s/<<(\$[a-z_][a-z_\d]*)>>/$1/igee;
+    $driver =~ s{/[*]<<(\$[a-z_][a-z_\d]*)>>[*]/}{$1}igee;
+    $driver =~ s{^abstract class Driver\b}{abstract class $driverclass}m;
+die $driver;
+	return ($text, $driver);
 }
 
 1;
