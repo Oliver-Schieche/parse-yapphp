@@ -112,6 +112,9 @@
         return 0 !== $this->ERRST;
     }
 
+    /**
+     * @return mixed
+     */
     public function YYParse()
     {
         return $this->parse();
@@ -142,6 +145,9 @@
         \fwrite(\STDERR, $output);
     }
 
+    /**
+     * @return mixed
+     */
     protected function parse()
     {
         $rules = $this->RULES;
