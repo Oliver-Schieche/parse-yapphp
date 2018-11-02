@@ -244,7 +244,63 @@
                 $this->debug(4, "Forced error recovery.\n");
                 $this->CHECK = '';
             }
+
+            if (!$this->ERRST) {
+                $this->ERRST = 1;
+                $this->_Error();
+
+                if (!$this->ERRST) { // if 0, then YYErrok has been called
+                    continue;        // so continue parsing
+                }
+
+                $this->debug(16, "**Entering error recovery.\n");
+                ++$dbgerror;
+                ++$this->NBERR;
+            }
+
+            if (3 === $this->ERRST) { // The next token is invalid: discard it
+                if ('' === $this->TOKEN) { // End of input... No hope
+                    $this->debug(16, "**At EOF: aborting.\n");
+                    return null;
+                }
+
+                $this->debug(16, "**Discard invalid token >%s<.\n", $this->TOKEN);
+                $this->TOKEN = $this->VALUE = null;
+            }
+
+            $this->ERRST = 3;
+
+            while (\count($this->STACK)) {
+                $stackTop = $this->STACK[\count($this->STACK) - 1];
+
+                if (!\array_key_exists('ACTIONS', $states[$stackTop[0]]) ||
+                    !\array_key_exists('error', $states[$stackTop[0]]['ACTIONS']) ||
+                    $states[$stackTop[0]]['ACTIONS']['error'] <= 0) {
+                    $this->debug(16, "**Pop state %d.\n", $stackTop[0]);
+                    \array_pop($this->STACK);
+                } else {
+                    break;
+                }
+            }
+
+            if (0 === \count($this->STACK)) {
+                $this->debug(16, "**No state left on stack: aborting.\n");
+                return null;
+            }
+
+            // Shift the error token
+            $stackTop = $this->STACK[\count($this->STACK) - 1];
+            $this->debug(16, "**Shift \$error token and go to state %d.\n", $states[$stackTop[0]]['ACTIONS']['error']);
+            $this->STACK[] = [$states[$stackTop[0]]['ACTIONS']['error'], null];
         }
+    }
+
+    /**
+     * ...
+     */
+    protected function _Error()
+    {
+        print "Parse error.\n";
     }
 }
 __halt_compiler();
