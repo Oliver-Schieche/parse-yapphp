@@ -137,7 +137,7 @@ use Parse::Yapp;
 
 use strict;
 
-use vars qw($opt_n $opt_m $opt_V $opt_v $opt_o $opt_h $opt_t);
+use vars qw($opt_d $opt_n $opt_m $opt_V $opt_v $opt_o $opt_h $opt_t);
 
 sub Usage {
 	my($prog)=(fileparse($0,'\..*'))[0];
@@ -149,6 +149,7 @@ Usage:	$prog [options] grammar[.yp]
 
     -m module   Give your parser module the name <module>
                 default is <grammar>
+    -d dirname  Write generated classed to <dirname> directory.
     -v          Create a file <grammar>.output describing your parser
     -n          Disable source file line numbering embedded in your parser
     -o outfile  Create the file <outfile> for your parser module
@@ -169,7 +170,7 @@ EOF
 
 my($nbargs)=@ARGV;
 
-	getopts('Vhvnm:t:o:')
+	getopts('Vhvnm:t:o:d:')
 or	Usage;
 
    (  ($opt_V and $nbargs > 1)
@@ -206,6 +207,8 @@ or  Usage;
 
 my($filename)=$ARGV[0];
 my($base,$path,$sfx)=fileparse($filename,'\..*');
+
+$path = $opt_d if $opt_d;
 
 	-r "$filename"
 or	do {
@@ -255,7 +258,7 @@ if ($opt_m) {
     $package=~m{^(?:(?<namespace>.*)\\)?(?<classname>[^\\]+)$};
 	$namespace = $+{namespace};
 	$package = $+{classname};
-    $outfile="$package.php";
+    $outfile="$path$package.php";
 }
 
 unless ($opt_o) {
