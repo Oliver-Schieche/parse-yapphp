@@ -91,6 +91,19 @@
     }
 
     /**
+     * @param int|null $debug
+     * @return int
+     */
+    public function YYDebug(int $debug = null)
+    {
+        if (null !== $debug) {
+            $this->DEBUG = $debug;
+        }
+
+        return $this->DEBUG;
+    }
+
+    /**
      * @return null
      */
     public function YYErrok()
