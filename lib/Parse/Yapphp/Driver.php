@@ -64,7 +64,7 @@
 
     /**
      * @param LexerInterface $lexer
-     * @return Driver
+     * @return self
      */
     public function setLexer(LexerInterface $lexer): self
     {
@@ -149,7 +149,7 @@
      * @param int $flag
      * @param string $message
      * @param mixed ...$arguments
-     * @return Driver
+     * @return self
      */
     protected function debug(int $flag, string $message, ...$arguments): self
     {
@@ -167,7 +167,9 @@
      */
     protected function debugOutput(int $flag, string $output)
     {
-        \fwrite(\STDERR, $output);
+        if ($flag) {
+            \fwrite(\STDERR, $output);
+        }
     }
 
     /**
@@ -339,6 +341,8 @@
             $this->debug(16, "**Shift \$error token and go to state %d.\n", $states[$stackTop[0]]['ACTIONS']['error']);
             $this->STACK[] = [$states[$stackTop[0]]['ACTIONS']['error'], null];
         }
+
+        return null;
     }
 
     /**

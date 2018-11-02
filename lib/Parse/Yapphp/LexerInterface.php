@@ -10,8 +10,8 @@
 interface LexerInterface
 {
     /**
-     * @param <<$package>> $parser
+     * @param <<$driverclass>> $parser
      * @return array
      */
-    public function lex(/*<<$package>>*/ $parser): array;
+    public function lex(/*<<$driverclass>>*/ $parser): array;
 }
