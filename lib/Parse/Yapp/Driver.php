@@ -125,6 +125,21 @@
      */
     protected function debug(int $flag, string $message, ...$arguments): self
     {
+        if (0 !== ($this->DEBUG & $flag)) {
+            $output = \vsprintf($message, $arguments);
+            $this->debugOutput($flag, $output);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param int $flag
+     * @param string $output
+     */
+    protected function debugOutput(int $flag, string $output)
+    {
+        \fwrite(\STDERR, $output);
     }
 
     protected function parse()
