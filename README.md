@@ -1,7 +1,7 @@
-# parse-yapp
-Parse::Yapp, Yet Another Parser Parser For Perl
+# parse-yapphp
+Parse::Yapphp, Yet Another Parser (generator for) PHP
 
-Compiles yacc-like LALR grammars to generate Perl OO parser modules.
+Compiles yacc-like LALR grammars to generate PHP OO parser modules.
 
 COPYRIGHT
 
