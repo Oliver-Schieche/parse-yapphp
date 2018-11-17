@@ -19,7 +19,7 @@ use vars qw($VERSION @ISA);
 use Parse::Yapphp::Output;
 
 # CORRELATION #py001: $VERSION must be changed in both Parse::Yapphp & Parse::Yapphp::Driver
-our $VERSION = '1.21';
+our $VERSION = '1.22';
 
 1;
 

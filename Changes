@@ -177,4 +177,5 @@ Revision history for Perl extension Yapp.
 1.21 Fri Aug 04 2017
     - Typo Fixes, POD Spelling (thanks to Gregor Herrmann)
     - Bug Fix, Missing POD Encoding (thanks to Gregor Herrmann)
-
+1.22 Sat Nov 17 2018
+    - Release to the public of ported code
