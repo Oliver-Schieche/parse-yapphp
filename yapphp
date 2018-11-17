@@ -4,6 +4,7 @@
 #
 # Copyright © 1998, 1999, 2000, 2001, Francois Desarmenien.
 # Copyright © 2017 William N. Braswell, Jr.
+# Copyright © 2018 Oliver Schieche (PHP portions)
 # All Rights Reserved.
 # (see the pod text in Parse::Yapphp module for use and distribution rights)
 #
@@ -13,7 +14,7 @@
 
 =head1 NAME
 
-yapphp - A perl frontend to the Parse::Yapp module
+yapphp - A perl frontend to the Parse::Yapphp module
 
 
 =head1 SYNOPSYS
@@ -27,9 +28,8 @@ yapphp I<-h>
 
 =head1 DESCRIPTION
 
-yapphp is a frontend to the Parse::Yapp module, which lets you compile
-Parse::Yapp grammar input files into Perl LALR(1) OO parser modules.
-
+yapphp is a frontend to the Parse::Yapphp module, which lets you compile
+Parse::Yapphp grammar input files into PHP LALR(1) OO parser modules.
 
 =head1 OPTIONS
 
@@ -71,9 +71,9 @@ working directory.
 
 The I<-t filename> option allows you to specify a file which should be 
 used as template for generating the parser output.  The default is to 
-use the internal template defined in F<Parse::Yapp::Output.pm>.
+use the internal template defined in F<Parse::Yapphp::Output.pm>.
 For how to write your own template and which substitutions are available,
-have a look to the module F<Parse::Yapp::Output.pm> : it should be obvious. 
+have a look to the module F<Parse::Yapphp::Output.pm> : it should be obvious. 
 
 =item I<-b shebang>
 
@@ -97,7 +97,7 @@ an attempt to open the file with a suffix of  F<.yp> is tried before exiting.
 
 =item I<-V>
 
-Display current version of Parse::Yapp and gracefully exits.
+Display current version of Parse::Yapphp and gracefully exits.
 
 =item I<-h>
 
@@ -119,11 +119,11 @@ William N. Braswell, Jr. <wbraswell_cpan@NOSPAM.nym.hush.com>
 Copyright © 1998, 1999, 2000, 2001, Francois Desarmenien.
 Copyright © 2017 William N. Braswell, Jr.
 
-See Parse::Yapp(3) for legal use and distribution rights
+See Parse::Yapphp(3) for legal use and distribution rights
 
 =head1 SEE ALSO
 
-Parse::Yapp(3) Perl(1) yacc(1) bison(1)
+Parse::Yapphp(3) Perl(1) yacc(1) bison(1)
 
 
 =cut
@@ -136,6 +136,7 @@ use Config;
 use Parse::Yapphp;
 
 use strict;
+use warnings;
 
 use vars qw($opt_d $opt_n $opt_m $opt_V $opt_v $opt_o $opt_h $opt_t);
 
@@ -149,7 +150,7 @@ Usage:	$prog [options] grammar[.yp]
 
     -m module   Give your parser module the name <module>
                 default is <grammar>
-    -d dirname  Write generated classed to <dirname> directory.
+    -d dirname  Write generated classes to <dirname> directory.
     -v          Create a file <grammar>.output describing your parser
     -n          Disable source file line numbering embedded in your parser
     -o outfile  Create the file <outfile> for your parser module

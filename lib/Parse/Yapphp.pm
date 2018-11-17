@@ -3,6 +3,7 @@
 #
 # Copyright © 1998, 1999, 2000, 2001, Francois Desarmenien.
 # Copyright © 2017 William N. Braswell, Jr.
+# Copyright © 2018 Oliver Schieche (PHP portions)
 # All Rights Reserved.
 #
 # See the Copyright section at the end of the Parse/Yapphp.pm pod section
