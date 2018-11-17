@@ -141,7 +141,7 @@ use warnings;
 use vars qw($opt_d $opt_n $opt_m $opt_V $opt_v $opt_o $opt_h $opt_t);
 
 sub Usage {
-	my($prog)=(fileparse($0,'\..*'))[0];
+	my ($prog)=(fileparse($0,'\..*'))[0];
 	die <<EOF;
 
 Usage:	$prog [options] grammar[.yp]
@@ -169,97 +169,85 @@ Usage:	$prog [options] grammar[.yp]
 EOF
 }
 
-my($nbargs)=@ARGV;
+unless (getopts('Vhvnm:t:o:d:')) {
+    Usage();
+}
 
-	getopts('Vhvnm:t:o:d:')
-or	Usage;
+if ($opt_h) {
+    Usage();
+}
 
-   (  ($opt_V and $nbargs > 1)
-    or $opt_h)
-and Usage;
-
-	$opt_V
-and do {
-
-    @ARGV == 0 or  Usage;
+if ($opt_V) {
+    Usage() if @ARGV;
 
     print "This is Parse::Yapphp version $Parse::Yapphp::Driver::VERSION.\n";
     exit(0);
-
-};
+}
 
 
 # -t <filename> ($opt_t) option allows a file to be specified which 
 # contains a 'template' to be used when generating the parser; 
 # if defined, we open and read the file.   
 
-	$opt_t
-and do {
+if ($opt_t) {
     local $/ = undef;
-    local *TFILE;
-    open(TFILE, $opt_t)
-	or die "Cannot open template file $opt_t: $!\n";
-    $opt_t = <TFILE>;
-    close(TFILE);
-};
 
-    @ARGV == 1
-or  Usage;
+    open my $fp, '<', $opt_t or die "Failed to open '$opt_t' for reading: $!\n";
+    $opt_t = <$fp>;
+    close $fp;
+}
 
-my($filename)=$ARGV[0];
-my($base,$path,$sfx)=fileparse($filename,'\..*');
+unless (scalar @ARGV == 1) {
+    Usage();
+}
+
+my ($filename) = $ARGV[0];
+my ($base,$path,$suffix) = fileparse($filename,'\..*');
 
 $path = $opt_d if $opt_d;
 
-	-r "$filename"
-or	do {
-		$sfx eq '.yp'
-	or	$filename.='.yp';
+unless (-r $filename) {
+    if ($suffix ne '.yp') {
+        $filename .= '.yp';
+    }
 
-		-r "$filename"
-	or	die "Cannot open $filename for reading.\n";
+    die "Cannot open $filename for reading.\n" unless -r $filename;
 };
 
-my($parser)=new Parse::Yapphp(inputfile => $filename);
+my ($parser) = Parse::Yapphp->new(inputfile => $filename);
+my ($warnings) = $parser->Warnings();
 
-my($warnings)=$parser->Warnings();
+print STDERR $warnings if $warnings;
 
-	$warnings
-and	print STDERR $warnings;
+if ($opt_v) {
+	my ($output) = "$path$base.output";
+	my ($tmp);
 
-	$opt_v
-and	do {
-	my($output)="$path$base.output";
-	my($tmp);
+    open my $fp, '>', $output or die "Cannot create $base.output for writing.\n";
 
-		open(OUT,">$output")
-	or	die "Cannot create $base.output for writing.\n";
+	print $fp "Warnings:\n---------\n$tmp\n" if $tmp = $parser->Warnings();
+	print $fp "Conflicts:\n----------\n$tmp\n" if $tmp = $parser->Conflicts();
+	print $fp "Rules:\n------\n";
+	print $fp $parser->ShowRules()."\n";
+	print $fp "States:\n-------\n";
+	print $fp $parser->ShowDfa()."\n";
+	print $fp "Summary:\n--------\n";
+	print $fp $parser->Summary();
+    
+	close $fp;
+}
 
-		$tmp=$parser->Warnings()
-	and	print	OUT "Warnings:\n---------\n$tmp\n";
-		$tmp=$parser->Conflicts()
-	and	print	OUT "Conflicts:\n----------\n$tmp\n";
-	print	OUT "Rules:\n------\n";
-	print	OUT $parser->ShowRules()."\n";
-	print	OUT "States:\n-------\n";
-	print	OUT $parser->ShowDfa()."\n";
-	print	OUT "Summary:\n--------\n";
-	print	OUT $parser->Summary();
-
-	close(OUT);
-};
-
-my($outfile)="$path$base.php";
-my($package)="$base";
-my($namespace)='Parser';
-my($driverfile,$lexerfile);
+my ($outfile) = "$path$base.php";
+my ($package) = "$base";
+my ($namespace) = 'Parser';
+my ($driverfile, $lexerfile);
 
 if ($opt_m) {
-    $package=$opt_m;
-    $package=~m{^(?:(?<namespace>.*)\\)?(?<classname>[^\\]+)$};
+    $package = $opt_m;
+    $package =~ m{^(?:(?<namespace>.*)\\)?(?<classname>[^\\]+)$};
 	$namespace = $+{namespace};
 	$package = $+{classname};
-    $outfile="$path$package.php";
+    $outfile = "$path$package.php";
 }
 
 unless ($opt_o) {
