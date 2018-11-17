@@ -1,8 +1,15 @@
 <?php
-/**
- * @author    Oliver Schieche <oliver.schieche@check24.de>
- * @copyright 2018 CHECK24 Vergleichsportal Flüge GmbH
- */
+/*******************************************************************
+ *
+ * @author Oliver Schieche <schiecheo@cpan.org>
+ *
+ *    This file was generated using Parse::Yapphp version <<$version>>.
+ *
+ *        Don't edit this file, use source file instead.
+ *
+ *             ANY CHANGES MADE HERE WILL BE LOST !
+ *
+ *******************************************************************/
 //------------------------------------------------------------------------------
 /*<<$namespace>>*//**
  * Interface LexerInterface
