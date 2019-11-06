@@ -255,7 +255,7 @@
                 $this->DOTPOS = $len;
 
                 if ('@' === $lhs[0]) { // In-line rule
-                    if (!\preg_match('~^@\d+-(\d+)$', $lhs, $match)) {
+                    if (!\preg_match('~^@\d+-(\d+)$~', $lhs, $match)) {
                         throw new \RuntimeException("In-line rule '$lhs' ill-formed; report this as a BUG.");
                     }
 
