@@ -123,7 +123,7 @@ sub TestIt {
 
     ++$count;
 
-    my($p)=new Parse::Yapp(input => $g);
+    my($p)=new Parse::Yapphp(input => $g);
     $p=$p->Output(classname => 'Test');
 
         $DEBUG
