@@ -39,7 +39,7 @@ my($yapptxt);
 #Test 2
 eval  {
 	$grammar=join('',<DATA>);
-	$parser=new Parse::Yapp(input => $grammar);
+	$parser=new Parse::Yapphp(input => $grammar);
 };
 
 	$@

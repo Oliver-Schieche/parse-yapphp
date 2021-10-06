@@ -10,8 +10,10 @@ WriteMakefile(
               'lib/Parse/Yapphp.pm' => '$(INST_LIBDIR)/Yapphp.pm',
               'lib/Parse/Yapphp/Options.pm' => '$(INST_LIBDIR)/Yapphp/Options.pm',
               'lib/Parse/Yapphp/Driver.pm' => '$(INST_LIBDIR)/Yapphp/Driver.pm',
+              'lib/Parse/Yapphp/Driver.php' => '$(INST_LIBDIR)/Yapphp/Driver.php',
               'lib/Parse/Yapphp/Grammar.pm' => '$(INST_LIBDIR)/Yapphp/Grammar.pm',
               'lib/Parse/Yapphp/Lalr.pm' => '$(INST_LIBDIR)/Yapphp/Lalr.pm',
+              'lib/Parse/Yapphp/LexerInterface.php' => '$(INST_LIBDIR)/Yapphp/LexerInterface.php',
               'lib/Parse/Yapphp/Output.pm' => '$(INST_LIBDIR)/Yapphp/Output.pm',
               'lib/Parse/Yapphp/Parse.pm' => '$(INST_LIBDIR)/Yapphp/Parse.pm'
             },
